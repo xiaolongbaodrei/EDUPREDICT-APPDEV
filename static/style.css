@@ -1,0 +1,240 @@
+:root{
+  /* Ateneo Modern-inspired palette */
+  --primary: #05294A; /* deep navy */
+  --primary-strong: #04263D;
+  --accent: #F2C94C; /* warm gold */
+  --accent-contrast: #0f1724;
+  --muted: #6c757d;
+  --card-shadow: 0 10px 36px rgba(3,27,52,0.08);
+  --font-heading: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue';
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto;
+}
+
+body{ font-family: var(--font-body); }
+.navbar-brand{ font-family: var(--font-heading); }
+
+body{
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  color: #0f1724;
+  line-height: 1.45;
+}
+
+/* Accent color and improved palette */
+:root{
+  --accent: #ff7a45;
+  --accent-contrast: #ffffff;
+  --muted: #6c757d;
+  --card-shadow: 0 8px 28px rgba(15,23,42,0.06);
+}
+
+.navbar{
+  box-shadow: 0 8px 36px rgba(3,27,52,0.12);
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-strong) 100%);
+}
+
+.navbar-brand{
+  font-weight:700;
+  letter-spacing: .2px;
+  color: #fff !important;
+} 
+
+.navbar .nav-link{ color: rgba(255,255,255,0.92); }
+.navbar .nav-link.nav-highlight, .navbar .nav-link.active{ background: rgba(255,255,255,0.06); color:#fff; }
+
+
+/* Highlighted nav link */
+.navbar .nav-link{
+  color: rgba(255,255,255,0.95);
+  transition: all .18s ease-in-out;
+  padding: .35rem .65rem;
+}
+.navbar .nav-link:hover{
+  background: rgba(255,255,255,0.06);
+  border-radius: .45rem;
+}
+.navbar .nav-link.nav-highlight,
+.navbar .nav-link.active{
+  background: rgba(255,255,255,0.18);
+  color: #fff !important;
+  border-radius: .5rem;
+  box-shadow: var(--card-shadow);
+}
+
+/* Card polish */
+.card{
+  border: none;
+  border-radius: .9rem;
+  box-shadow: var(--card-shadow);
+  padding: 1.15rem;
+}
+
+/* Stronger headings */
+h3.card-title{ font-size: 1.45rem; font-weight: 700; margin-bottom: .75rem }
+h5{ font-weight:600 }
+
+/* Make small card variations softer */
+.card.shadow-sm{
+  box-shadow: 0 6px 18px rgba(15,23,42,0.05);
+}
+
+/* Table zebra and hover lift */
+.table tbody tr:nth-child(odd){ background: rgba(15,23,42,0.01) }
+.table-hover tbody tr:hover{
+  background: rgba(13,110,253,0.035);
+  transform: translateY(-3px);
+}
+
+/* Buttons with gentle shadow */
+.btn-primary{
+  background: var(--primary);
+  border: none;
+  color: #fff;
+  box-shadow: 0 8px 22px rgba(3,27,52,0.12);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn-primary:hover{ transform: translateY(-2px); box-shadow: 0 12px 28px rgba(3,27,52,0.14); }
+
+/* Accent CTA */
+.btn-accent{
+  background: var(--accent); color: var(--accent-contrast); border: none;
+  box-shadow: 0 10px 30px rgba(242,201,76,0.12);
+  transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+}
+.btn-accent:hover{ transform: translateY(-3px); box-shadow: 0 16px 34px rgba(242,201,76,0.18); opacity: .98 }
+.btn-accent:active{ transform: translateY(-1px) }
+
+/* Dashboard hero (darkened) */
+.hero{ background: linear-gradient(180deg, rgba(5,41,74,0.08), rgba(5,41,74,0.04)); padding: 2.2rem; border-radius: .8rem; box-shadow: 0 10px 40px rgba(3,27,52,0.06); margin-bottom: 1.25rem; border: 1px solid rgba(3,27,52,0.03) }
+.hero h1{ font-family: var(--font-heading); font-size: 1.9rem; margin-bottom: .35rem; color: var(--primary); }
+.hero p{ margin-bottom:0; color: var(--muted); }
+.hero .btn-hero{ margin-top: .6rem }
+
+/* Section header box under hero */
+.section-box{ background: linear-gradient(180deg, rgba(5,41,74,0.02), rgba(5,41,74,0.01)); border-radius: .6rem; border: 1px solid rgba(3,27,52,0.03); }
+
+/* Dashboard card hover lift */
+.dashboard-card{ transition: transform .18s ease, box-shadow .18s ease; }
+@media (prefers-reduced-motion: reduce){ .dashboard-card{ transition: none } }
+.dashboard-card:hover{ transform: translateY(-10px); box-shadow: 0 18px 46px rgba(3,27,52,0.10) }
+
+/* Tinted backgrounds for dashboard cards (darker variants) */
+.total-card{ background: linear-gradient(180deg, rgba(5,41,74,0.12), rgba(5,41,74,0.06)); border: 1px solid rgba(3,27,52,0.08); }
+.total-card .card-body{ background: transparent; padding:1.5rem; }
+.total-card .total-number{ color: var(--primary-strong); font-weight:800 }
+
+.atrisk-card{ background: linear-gradient(180deg, rgba(200,50,60,0.14), rgba(200,50,60,0.07)); border: 1px solid rgba(180,30,40,0.12); }
+.atrisk-card .card-body{ background: transparent; padding:1.5rem }
+.atrisk-card .atrisk-number{ color: #8b0000; font-weight:800 }
+
+
+
+/* Badge accent */
+.badge-accent{ background: var(--accent); color: var(--accent-contrast); }
+
+.card .card-header{ background: transparent; border-bottom: 1px solid rgba(3,27,52,0.04); }
+
+.alert{
+  box-shadow: 0 2px 8px rgba(3,27,52,0.06);
+}
+footer{
+  background: #fff;
+}
+
+/* small responsive tweaks */
+@media (max-width:576px){
+  .display-6{font-size:2rem}
+  .table-responsive{overflow-x:auto}
+  .btn-sm{padding:.25rem .4rem}
+  h3.card-title{font-size:1.25rem}
+}
+
+/* Small visual polish for icon-text buttons */
+.btn .me-1{vertical-align:middle}
+
+/* Confirmation overlay (server-side fallback) */
+.confirm-overlay{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,0.45);
+  backdrop-filter: blur(6px) saturate(1.05);
+  z-index:2000;
+  padding:1rem;
+}
+.confirm-card{width:100%; max-width:720px;}
+.confirm-card .card-body{padding:1.25rem}
+
+/* Nav icons */
+.nav-icon{ display:inline-block; width:18px; text-align:center; margin-right:.45rem; font-size:15px; vertical-align:middle }
+
+/* Back button small style */
+.btn-back{ font-size:0.85rem; padding:.28rem .55rem; }
+.btn-back:focus{ box-shadow: 0 6px 18px rgba(13,110,253,0.12); outline:none }
+
+/* Modal scale + fade animation */
+.modal.fade .modal-dialog{
+  transform: translateY(-6px) scale(.98);
+  opacity: 0;
+  transition: transform .16s ease, opacity .16s ease;
+}
+.modal.show .modal-dialog{
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+/* Global page transitions and reduced-motion support */
+:root{ --transition-fast: .12s; --transition-medium: .25s; --transition-slow: .45s }
+
+/* Page visibility controlled by overlay; ensure body is visible even if JS fails */
+body{ transition: opacity var(--transition-medium) ease, transform var(--transition-medium) ease; opacity: 1; }
+body.page-ready{ opacity: 1; }
+
+/* Page overlay used for crossfade */
+.page-overlay{ position: fixed; inset: 0; background: var(--page-overlay-bg, #ffffff); z-index: 1500; pointer-events:none; opacity: 1; transition: opacity var(--transition-medium) ease; }
+.page-overlay.overlay-hidden{ opacity: 0; }
+
+/* Prefer reduced motion: disable transitions for users who opted out */
+@media (prefers-reduced-motion: reduce){
+  *{ transition: none !important; animation: none !important }
+  .page-overlay{ opacity: 0 !important }
+}
+
+/* Small refinements for interactive elements */
+.btn, .card, .table-hover tbody tr, .badge{ transition: transform var(--transition-fast) ease, box-shadow var(--transition-fast) ease, background-color var(--transition-fast) ease }
+
+/* Additional polish for Manage Students */
+.card-custom{ padding:0; overflow:visible }
+.card-custom .card-header{ background: linear-gradient(90deg, rgba(255,255,255,0.98) 0%, rgba(250,250,250,0.98) 100%); border-bottom:1px solid rgba(15,23,42,0.04); padding:1rem 1.15rem }
+.card-custom .card-body{ padding:1rem 1.15rem }
+
+.table-hover tbody tr{ transition: background .12s ease, transform .12s ease }
+.table-hover tbody tr:hover{ transform: translateY(-3px) }
+
+.btn-action{ padding:.28rem .6rem; border-radius:.45rem; min-width:64px; }
+.btn-action:focus{ box-shadow: 0 8px 20px rgba(15,23,42,0.06); outline:none }
+
+/* Actions column tweaks */
+.actions-cell{ vertical-align: middle; padding-right: .6rem }
+.actions-wrap{ display:inline-flex; gap:.6rem; align-items:center; justify-content:flex-end; background: rgba(255,255,255,0.98); padding: .25rem .55rem; border-radius: .6rem; box-shadow: 0 4px 12px rgba(3,27,52,0.04); min-width:140px }
+.actions-wrap{ flex-wrap: nowrap }
+.actions-wrap .form-select{ display:inline-block; width:auto; min-width:110px }
+.actions-wrap form{ display:inline-flex; align-items:center; gap:.45rem; margin:0 }
+.actions-wrap .btn{ white-space:nowrap; margin:0 }
+@media (max-width:576px){
+  .actions-wrap{ gap:.45rem; min-width:100px; max-width:100% ; flex-wrap:wrap }
+  .btn-action{ min-width:56px }
+}
+
+/* Actions column width adjusted to avoid stacked buttons */
+.table td:last-child{ width:auto; min-width:120px; max-width:260px; }
+
+
+.badge{ border-radius:.5rem; padding:.35em .6em; font-size:.85rem }
+
+/* Actions column width adjusted to avoid stacked buttons */
+.table td:last-child{ width:200px; min-width:160px }
+
+
+

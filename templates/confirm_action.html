@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Full-screen overlay with blurred background to mimic modal behavior -->
+<div class="confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="confirmOverlayTitle">
+  <div class="confirm-card card shadow-sm">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-start">
+        <h4 id="confirmOverlayTitle" class="card-title mb-1">Please confirm</h4>
+        <a href="{{ cancel_url }}" class="btn-close" aria-label="Close"></a>
+      </div>
+      <p class="mt-2">{{ message }}</p>
+
+      {% if items %}
+        <div class="mb-3">
+          <div class="small text-muted">The following items will be affected:</div>
+          <ul class="small">
+            {% for it in items %}
+              <li>{{ it }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <form method="POST" action="{{ action }}">
+        {% for name, value in hidden_items.items() %}
+          <input type="hidden" name="{{ name }}" value="{{ value }}">
+        {% endfor %}
+        <input type="hidden" name="_confirmed" value="1">
+
+        <div class="d-flex gap-2 justify-content-end">
+          <a class="btn btn-outline-secondary" href="{{ cancel_url }}">Cancel</a>
+          <button class="btn btn-danger" type="submit">Yes, confirm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Focus the primary confirm button for accessibility
+  document.addEventListener('DOMContentLoaded', function(){
+    const btn = document.querySelector('.confirm-card .btn-danger');
+    if(btn) btn.focus();
+  });
+</script>
+
+{% endblock %}

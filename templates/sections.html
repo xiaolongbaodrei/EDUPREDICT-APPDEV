@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h3 class="mb-0">Sections</h3>
+  <div>
+    {% include '_back_button.html' %}
+  </div>
+</div>
+
+{% if not sections %}
+  <p class="text-muted">No sections or students available.</p>
+{% else %}
+  {% for section_name, students in sections.items() %}
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title">{{ section_name }} <span class="badge bg-secondary ms-2">{{ students|length }}</span></h5>
+        {% set my_count = students|selectattr('added_by','equalto', session.get('user'))|list|length %}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <form method="get" class="row g-2">
+            <input type="hidden" name="section" value="{{ section_name }}">
+            <div class="col-auto">
+              <input name="q" class="form-control form-control-sm" placeholder="Search by name..." value="{{ request.args.get('q','') }}">
+            </div>
+            <div class="col-auto">
+              <select name="subject" class="form-select form-select-sm">
+                <option value="All" {% if request.args.get('subject','All') == 'All' %}selected{% endif %}>All subjects</option>
+                {% for subj in subjects_list %}
+                  <option value="{{ subj }}" {% if request.args.get('subject') == subj %}selected{% endif %}>{{ subj }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-auto">
+              <select name="risk" class="form-select form-select-sm">
+                <option value="All" {% if request.args.get('risk','All') == 'All' %}selected{% endif %}>All risk</option>
+                <option value="High Risk" {% if request.args.get('risk') == 'High Risk' %}selected{% endif %}>High Risk</option>
+                <option value="Low Risk" {% if request.args.get('risk') == 'Low Risk' %}selected{% endif %}>Low Risk</option>
+              </select>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-primary" type="submit">Filter</button>
+              <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('sections') }}">Clear</a>
+            </div>
+          </form>
+
+          {% if my_count > 0 %}
+            <form method="post" action="{{ url_for('delete_section_students') }}" class="confirmable" data-confirm="Delete my {{ my_count }} student(s) from {{ section_name }}? This cannot be undone.">
+              <input type="hidden" name="section" value="{{ section_name }}">
+              <input type="hidden" name="_requires_confirm" value="1">
+              <button class="btn btn-sm btn-outline-danger" type="submit">Delete my {{ my_count }} in this section</button>
+            </form>
+          {% endif %}
+        </div>
+        {% if session.get('role') == 'Admin' %}
+          <div class="mb-2 small text-muted">Admin view: read-only (you can see all students but cannot edit those you didn't add)</div>
+        {% endif %}
+        <div class="table-responsive">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Name</th>
+                <th>Subject</th>
+                <th>Final Grade</th>
+                <th>Risk</th>
+                <th>Added by</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for s in students %}
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ s.name }}</td>
+                <td>{{ s.subject or '-' }}</td>
+                <td>{{ '%.2f'|format(s.final_grade) if s.final_grade is not none else '-' }}</td>
+                <td>
+                  {% if s.risk == 'High Risk' %}
+                    <span class="badge bg-danger">{{ s.risk }}</span>
+                  {% elif s.risk == 'Low Risk' %}
+                    <span class="badge bg-success">{{ s.risk }}</span>
+                  {% else %}
+                    <span class="badge bg-secondary">{{ s.risk }}</span>
+                  {% endif %}
+                </td>
+                <td>{{ s.added_by }}</td>
+                <td>
+                  {% if session.get('user') == s.added_by %}
+                    <form method="post" action="{{ url_for('delete_student', student_id=s.id) }}" style="display:inline" class="confirmable" data-confirm="Delete student {{ s.name }}?">
+                      <input type="hidden" name="_requires_confirm" value="1">
+                      <button class="btn btn-sm btn-outline-danger" type="submit">🗑️ Delete</button>
+                    </form>
+                  {% else %}
+                    <span class="text-muted">—</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody> 
+          </table>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title mb-3">Edit Student</h3>
+        <form method="POST" class="confirmable" data-confirm="Save changes to {name}?">
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input class="form-control" name="name" value="{{ student.name }}" required>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Activities</label>
+              <input class="form-control" type="number" step="0.01" name="activities" value="{{ student.activities or 0 }}">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Quizzes</label>
+              <input class="form-control" type="number" step="0.01" name="quizzes" value="{{ student.quizzes or 0 }}">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">PT Score</label>
+              <input class="form-control" type="number" step="0.01" name="performance_task" value="{{ student.performance_task or 0 }}">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Attendance</label>
+              <input class="form-control" type="number" step="0.01" name="attendance" value="{{ student.attendance or 0 }}">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Exam</label>
+            <input class="form-control" type="number" step="0.01" name="exam" value="{{ student.exam or 0 }}">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Section</label>
+            <input class="form-control" name="section" value="{{ student.section or '' }}">
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Subject</label>
+            <select class="form-select" name="subject">
+              <option value="" {% if not student.subject %}selected{% endif %}>Unassigned</option>
+              <option value="math" {% if student.subject == 'math' %}selected{% endif %}>Math</option>
+              <option value="science" {% if student.subject == 'science' %}selected{% endif %}>Science</option>
+              <option value="english" {% if student.subject == 'english' %}selected{% endif %}>English</option>
+              <option value="filipino" {% if student.subject == 'filipino' %}selected{% endif %}>Filipino</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Notes</label>
+            <textarea class="form-control" name="notes">{{ student.notes or '' }}</textarea>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <div>
+              <a class="btn btn-outline-secondary me-2" href="{{ url_for('manage_students') }}">Cancel</a>
+              {% include '_back_button.html' %}
+            </div>
+            <button class="btn btn-accent">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

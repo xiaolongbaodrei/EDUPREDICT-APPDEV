@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual env
+venv/
+
+# Instance and import temporaries
+instance/
+instance/imports/
+
+# Data exports and archive
+exports/
+data/archive/removed/
+
+# DB (optional - uncomment if you do not want DB in repo)
+# database.db
+
+# Editor temporary files
+*.swp
+*.swo

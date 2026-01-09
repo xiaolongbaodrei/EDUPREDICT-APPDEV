@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EduPredict</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body class="bg-light" style="font-family: 'Inter', sans-serif;">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <a class="navbar-brand" href="{{ url_for('dashboard') }}">EduPredict</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navMain">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            {% if session.get('user') %}
+              <li class="nav-item"><a class="nav-link {% if request.endpoint == 'dashboard' %}active nav-highlight{% endif %}" href="{{ url_for('dashboard') }}"><span class="nav-icon">🏠</span> Dashboard</a></li>
+              <li class="nav-item"><a class="nav-link {% if request.endpoint == 'predict' %}active nav-highlight{% endif %}" href="{{ url_for('predict') }}"><span class="nav-icon">🧠</span> Predict</a></li>
+              <li class="nav-item"><a class="nav-link {% if request.endpoint == 'sections' %}active nav-highlight{% endif %}" href="{{ url_for('sections') }}"><span class="nav-icon">📚</span> Sections</a></li>
+            {% endif %}
+          </ul>
+
+          <div class="d-flex align-items-center">
+            {% if session.get('user') %}
+              <div class="me-3 text-white small">{{ session.get('user') }} <span class="badge bg-secondary">{{ session.get('role') }}</span></div>
+              <form method="POST" action="{{ url_for('logout') }}" class="d-inline confirmable" data-confirm="Logout {{ session.get('user') }}?">
+                <input type="hidden" name="_requires_confirm" value="1">
+                <button class="btn btn-outline-light btn-sm" type="submit">Logout</button>
+              </form>
+            {% else %}
+              <a class="btn btn-outline-light btn-sm me-2" href="{{ url_for('login') }}">Login</a>
+              <a class="btn btn-light btn-sm" href="{{ url_for('register') }}">Register</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container my-5">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="mb-3">
+            {% for msg in messages %}
+              <div class="alert alert-info alert-dismissible fade show" role="alert">
+                {{ msg }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="text-center py-4 border-top bg-white">
+      <div class="container small text-muted">EduPredict &copy; {{ 2026 }}</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Confirmation modal used for sensitive actions (create/edit/delete) -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header" id="confirmModalHeader">
+            <h5 class="modal-title" id="confirmModalLabel">Please confirm</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="confirmModalBody">Are you sure?</div>
+            <div id="confirmModalDetails" class="small text-muted mt-2" aria-hidden="true"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-accent" id="confirmModalOk">Yes, proceed</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function(){
+        // Generic confirmation modal for forms marked .confirmable
+        const confirmModalEl = document.getElementById('confirmModal');
+        const confirmModal = confirmModalEl ? new bootstrap.Modal(confirmModalEl) : null;
+        const confirmBody = document.getElementById('confirmModalBody');
+        const confirmOk = document.getElementById('confirmModalOk');
+        let pendingForm = null;
+
+        function formatMessage(template, form){
+          // Replace placeholders like {name} or {role} with form values when available
+          try{
+            let out = template || 'Are you sure?';
+            if(out.includes('{name}')){
+              const nm = form.querySelector('input[name=name]') ? form.querySelector('input[name=name]').value : '';
+              out = out.replace('{name}', nm);
+            }
+            if(out.includes('{role}')){
+              const rl = form.querySelector('select[name=role]') ? form.querySelector('select[name=role]').value : '';
+              out = out.replace('{role}', rl);
+            }
+            return out;
+          }catch(e){/* ignore */}
+          return template || 'Are you sure?';
+        }
+
+        document.addEventListener('submit', function(e){
+          const form = e.target;
+          if(form && form.classList && form.classList.contains('confirmable')){
+            e.preventDefault();
+            pendingForm = form;
+            const msg = formatMessage(form.dataset.confirm || 'Are you sure you want to continue?', form);
+            if(confirmBody) confirmBody.textContent = msg;
+
+            // Clear previous details
+            const details = document.getElementById('confirmModalDetails');
+            if(details) details.textContent = '';
+
+            // If form has a data-details attribute, put that into the modal's details area
+            if(form.dataset.details){
+              try{ details.innerHTML = form.dataset.details; }catch(ex){ details.textContent = form.dataset.details; }
+            }
+
+            // Style modal depending on action (delete should be dangerous)
+            const hdr = document.getElementById('confirmModalHeader');
+            const okBtn = document.getElementById('confirmModalOk');
+            if(hdr) hdr.classList.remove('bg-danger','text-white');
+            if(okBtn){ okBtn.classList.remove('btn-danger'); okBtn.classList.add('btn-accent'); okBtn.textContent = 'Yes, proceed'; }
+            if(/delete/i.test(msg)){
+              if(hdr) hdr.classList.add('bg-danger','text-white');
+              if(okBtn){ okBtn.classList.remove('btn-accent'); okBtn.classList.add('btn-danger'); okBtn.textContent = 'Yes, delete'; }
+            }
+
+            if(confirmModal) confirmModal.show();
+          }
+        }, true);
+
+        if(confirmOk){
+          confirmOk.addEventListener('click', function(){
+            if(pendingForm){
+              // Submit without triggering the confirm modal again
+              pendingForm.classList.remove('confirmable');
+              pendingForm.submit();
+            }
+          });
+        }
+      })();
+
+      /* Page transitions: fade in on load, fade out on internal navigation
+         Respects prefers-reduced-motion */
+      (function(){
+        if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+          document.body.classList.add('page-ready');
+          return;
+        }
+
+        // Fade-in after DOM ready
+        window.addEventListener('DOMContentLoaded', function(){
+          // Small timeout to ensure CSS is applied before animating
+          requestAnimationFrame(function(){ document.body.classList.add('page-ready'); });
+
+          // Intercept internal link clicks to fade out before navigating
+          document.addEventListener('click', function(e){
+            const a = e.target.closest && e.target.closest('a');
+            if(!a) return;
+            const href = a.getAttribute('href');
+            const target = a.getAttribute('target');
+            const download = a.hasAttribute('download');
+            // Skip if external, blank target, anchors, downloads, or mailto
+            if(!href || href.startsWith('http') && !href.startsWith(location.origin) || target === '_blank' || download || href.startsWith('mailto:') || href.startsWith('#')) return;
+            e.preventDefault();
+            document.body.classList.remove('page-ready');
+            document.body.classList.add('page-exit');
+            const t = Math.max(250, parseFloat(getComputedStyle(document.body).transitionDuration) * 1000 || 250);
+            setTimeout(function(){ window.location.href = href; }, t + 30);
+          }, true);
+        });
+
+        // Safety fallback: ensure we become visible even if DOMContentLoaded is delayed
+        setTimeout(function(){ document.body.classList.add('page-ready'); }, 600);
+      })();
+
+     

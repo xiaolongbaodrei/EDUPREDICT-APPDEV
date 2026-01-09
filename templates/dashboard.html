@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero">
+  <div class="d-flex justify-content-between align-items-center">
+    <div>
+      <h1>EduPredict Dashboard</h1>
+      <p class="small text-muted">Quick overview of students, risk levels, and actions to reduce dropout.</p>
+    </div>
+    <div class="text-end">
+      {% if role == 'Admin' %}
+        <a class="btn btn-sm btn-outline-primary me-2" href="/admin/users">Manage Users</a>
+      {% endif %}
+      {% if role in ['Admin','Teacher'] %}
+        <a class="btn btn-sm btn-primary" href="/admin/students">Manage Students</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="section-box mb-4 p-3">
+  <div class="d-flex justify-content-between align-items-center">
+    <div>
+      <h2 class="mb-0">Dashboard</h2>
+      <small class="text-muted">Overview of students and risk</small>
+    </div>
+    <div></div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <div class="card mb-3 dashboard-card total-card">
+      <div class="card-body">
+        <h5 class="card-title">Total Students</h5>
+        <p class="display-6 total-number">{{ total }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card mb-3 dashboard-card atrisk-card">
+      <div class="card-body">
+        <h5 class="card-title">At-Risk Students</h5>
+        <p class="display-6 atrisk-number">{{ at_risk }}</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="mt-3">
+  <a class="btn btn-primary" href="/predict">Add New Prediction</a>
+</div>
+{% endblock %}
+

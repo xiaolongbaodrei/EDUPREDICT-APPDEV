@@ -1,0 +1,7 @@
+{# Prefer session-stored last_opened, but only if it's different from the current URL. Otherwise fallback to referrer (same-host), then to history.back() #}
+{% set last = session.get('last_opened') %}
+{% set cur = request.url %}
+{% set ref = request.referrer or '' %}
+
+{# Prefer a stored dashboard identifier (no query strings). Fall back to last_opened URL/referrer/history as before #}
+<button class="btn btn-outline-secondary btn-sm btn-back" type="button" onclick="history.back()">← Go back</button>

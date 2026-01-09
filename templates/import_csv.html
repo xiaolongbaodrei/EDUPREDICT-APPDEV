@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h3 class="card-title mb-0">Import Students (CSV)</h3>
+          {% include '_back_button.html' %}
+        </div>
+
+        {% if not preview %}
+        <form method="POST" enctype="multipart/form-data">
+          <div class="mb-3">
+            <label class="form-label">CSV file</label>
+            <input class="form-control" type="file" name="file" accept="text/csv" required>
+          </div>
+          <div class="small text-muted mb-3">Expected columns: name, section, subject, activities, quizzes, performance_task, exam, attendance, notes</div>
+          <button class="btn btn-accent">Upload & Preview</button>
+          <a class="btn btn-outline-secondary ms-2" href="{{ url_for('manage_students') }}">Cancel</a>
+        </form>
+        {% else %}
+        <h5>Preview</h5>
+        <p class="small text-muted">Valid rows: {{ results|length }} | Invalid rows: {{ errors|length }}</p>
+
+        {% if errors %}
+          <div class="alert alert-warning">Some rows are invalid. See Errors below.</div>
+          <table class="table table-sm table-striped mb-3">
+            <thead><tr><th>#</th><th>Errors</th><th>Raw</th></tr></thead>
+            <tbody>
+              {% for e in errors %}
+                <tr><td>{{ e.row }}</td><td>{{ e.errors|join(', ') }}</td><td><pre>{{ e.raw }}</pre></td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% endif %}
+
+        {% if results %}
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>#</th><th>Name</th><th>Section</th><th>Subject</th><th>Final Grade</th><th>Risk</th></tr></thead>
+              <tbody>
+                {% for r in results %}
+                  <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ r.name }}</td>
+                    <td>{{ r.section }}</td>
+                    <td>{{ r.subject }}</td>
+                    <td>{{ '%.2f'|format(r.final_grade) }}</td>
+                    <td>{{ r.risk }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="d-flex gap-2">
+            <form method="POST" action="{{ url_for('import_csv_save', token=token) }}" class="confirmable" data-confirm="Save {{ results|length }} student(s) to the database? This cannot be undone.">
+              <input type="hidden" name="_requires_confirm" value="1">
+              <button class="btn btn-accent">Save to Database</button>
+            </form>
+            <a class="btn btn-outline-secondary" href="{{ url_for('import_csv_download', token=token) }}">Download CSV</a>
+            <a class="btn btn-outline-secondary" href="{{ url_for('import_csv') }}">Upload another</a>
+          </div>
+        {% endif %}
+
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
